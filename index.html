@@ -3,961 +3,1187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blockchain Technology - The Future of Trust</title>
+    <title>NEXUS/CHAIN — Distributed Consensus Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
                         display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#6366f1',
-                        secondary: '#8b5cf6',
-                        accent: '#06b6d4',
-                        dark: '#0f172a',
-                        darker: '#020617',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'spin-slow': 'spin 8s linear infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        }
+                        void: '#050505',
+                        surface: '#0a0a0f',
+                        panel: '#111118',
+                        trace: '#1e1e2e',
+                        signal: '#00e5a0',
+                        signalDim: 'rgba(0, 229, 160, 0.1)',
+                        alert: '#ff3860',
+                        frost: '#e2e8f0',
+                        dim: '#64748b',
                     }
                 }
             }
         }
     </script>
+
     <style>
+        /* === CORE AESTHETIC: Cyber-Luxe === */
         body {
-            background-color: #020617;
+            background-color: #050505;
             color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        
-        .glass {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(99, 102, 241, 0.1);
+
+        /* Subtle grid with depth */
+        .grid-depth {
+            background-image: 
+                linear-gradient(rgba(0, 229, 160, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 160, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
+
+        /* Glass panels with 1px precision borders */
+        .lux-panel {
+            background: rgba(17, 17, 24, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
         }
         
+        .lux-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 160, 0.3), transparent);
+        }
+
+        /* Signal glow - precise, not blurry */
+        .signal-glow {
+            box-shadow: 0 0 0 1px rgba(0, 229, 160, 0.2), 0 0 20px rgba(0, 229, 160, 0.05);
+        }
+
+        /* Gradient text */
         .gradient-text {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+            background: linear-gradient(135deg, #00e5a0 0%, #00d4ff 50%, #7c3aed 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        .glow {
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
-            border-color: rgba(99, 102, 241, 0.5);
-        }
-        
-        .scroll-reveal {
+
+        /* Scroll reveal */
+        .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
-        .scroll-reveal.active {
+        .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
-        
-        .block-node {
-            transition: all 0.3s ease;
+
+        /* Terminal cursor */
+        .cursor-blink::after {
+            content: '▋';
+            animation: blink 1s step-end infinite;
+            color: #00e5a0;
+            margin-left: 2px;
         }
-        
-        .block-node:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Scanline */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 229, 160, 0.08);
+            animation: scan 10s linear infinite;
+            pointer-events: none;
+            z-index: 9999;
         }
-        
-        .chain-link {
-            stroke-dasharray: 10;
-            animation: dash 1s linear infinite;
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
         }
-        
-        @keyframes dash {
-            to {
-                stroke-dashoffset: -20;
-            }
+
+        /* Noise overlay */
+        .noise {
+            position: fixed;
+            inset: 0;
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 9998;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-        
-        .grid-bg {
-            background-image: 
-                linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-        
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00e5a0; }
+
+        /* Tab system */
         .tab-active {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
+            background: rgba(0, 229, 160, 0.1);
+            border: 1px solid rgba(0, 229, 160, 0.3);
+            color: #00e5a0;
+        }
+        .tab-inactive {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #64748b;
+        }
+
+        /* Progress bar striped */
+        .progress-stripes {
+            background: repeating-linear-gradient(
+                45deg,
+                #00e5a0,
+                #00e5a0 4px,
+                transparent 4px,
+                transparent 8px
+            );
+        }
+
+        /* Block hover */
+        .block-hover {
+            transition: all 0.2s ease;
+        }
+        .block-hover:hover {
+            border-color: rgba(0, 229, 160, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Marquee */
+        .marquee-track {
+            display: flex;
+            animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Tooltip */
+        .tip {
+            position: relative;
+        }
+        .tip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111118;
+            border: 1px solid rgba(0, 229, 160, 0.2);
+            color: #00e5a0;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s;
+            border-radius: 2px;
+            z-index: 50;
+        }
+        .tip:hover::after { opacity: 1; }
+
+        /* Kinetic title */
+        .kinetic {
+            animation: subtleShift 8s ease-in-out infinite;
+        }
+        @keyframes subtleShift {
+            0%, 100% { transform: translate(0); }
+            25% { transform: translate(0.5px, -0.5px); }
+            50% { transform: translate(-0.5px, 0.5px); }
+            75% { transform: translate(0.5px, 0.5px); }
+        }
+
+        /* Connection lines for blocks */
+        .chain-connector {
+            position: relative;
+        }
+        .chain-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -24px;
+            width: 24px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(0, 229, 160, 0.3), transparent);
+        }
+
+        /* Selection */
+        ::selection {
+            background: rgba(0, 229, 160, 0.2);
+            color: #00e5a0;
         }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="antialiased">
+
+    <!-- FX Layers -->
+    <div class="grid-depth fixed inset-0 pointer-events-none z-0"></div>
+    <div class="noise"></div>
+    <div class="scanline"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-cube text-primary text-2xl animate-pulse-slow"></i>
-                    <span class="font-display font-bold text-xl tracking-tight">Chain<span class="text-primary">Tech</span></span>
+    <nav class="fixed top-0 w-full z-50 lux-panel border-b border-white/5 h-16">
+        <div class="max-w-[1400px] mx-auto px-6 h-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-sm bg-signal/10 border border-signal/30 flex items-center justify-center">
+                    <i class="fa-solid fa-cube text-signal text-sm"></i>
                 </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#overview" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Overview</a>
-                    <a href="#how-it-works" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">How It Works</a>
-                    <a href="#use-cases" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Use Cases</a>
-                    <a href="#trends" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">2026 Trends</a>
-                    <a href="#market" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Market</a>
+                <div>
+                    <span class="font-display font-bold text-lg tracking-tight text-frost">NEXUS<span class="text-signal">/</span>CHAIN</span>
+                    <span class="hidden sm:inline text-[10px] font-mono text-dim ml-3 border-l border-trace pl-3">v.2026.5.0</span>
                 </div>
-                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-white">
-                    <i class="fa-solid fa-bars text-xl"></i>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-1">
+                <a href="#protocol" class="px-4 py-2 text-xs font-mono uppercase tracking-wider text-dim hover:text-signal hover:bg-signal/5 rounded-sm transition-all">Protocol</a>
+                <a href="#ledger" class="px-4 py-2 text-xs font-mono uppercase tracking-wider text-dim hover:text-signal hover:bg-signal/5 rounded-sm transition-all">Ledger</a>
+                <a href="#network" class="px-4 py-2 text-xs font-mono uppercase tracking-wider text-dim hover:text-signal hover:bg-signal/5 rounded-sm transition-all">Network</a>
+                <a href="#telemetry" class="px-4 py-2 text-xs font-mono uppercase tracking-wider text-dim hover:text-signal hover:bg-signal/5 rounded-sm transition-all">Telemetry</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-sm bg-signal/5 border border-signal/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-signal animate-pulse"></span>
+                    <span class="text-[10px] font-mono text-signal">LIVE</span>
+                </div>
+                <button onclick="toggleMobile()" class="md:hidden w-8 h-8 flex items-center justify-center border border-trace rounded-sm hover:border-signal transition-colors">
+                    <i class="fa-solid fa-bars text-dim text-xs"></i>
                 </button>
             </div>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/5">
-            <div class="px-4 pt-2 pb-4 space-y-2">
-                <a href="#overview" class="block px-3 py-2 text-sm text-gray-300 hover:text-white">Overview</a>
-                <a href="#how-it-works" class="block px-3 py-2 text-sm text-gray-300 hover:text-white">How It Works</a>
-                <a href="#use-cases" class="block px-3 py-2 text-sm text-gray-300 hover:text-white">Use Cases</a>
-                <a href="#trends" class="block px-3 py-2 text-sm text-gray-300 hover:text-white">2026 Trends</a>
-            </div>
+        
+        <!-- Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-surface">
+            <a href="#protocol" class="block px-6 py-3 text-xs font-mono uppercase text-dim hover:text-signal hover:bg-signal/5 border-b border-white/5">Protocol</a>
+            <a href="#ledger" class="block px-6 py-3 text-xs font-mono uppercase text-dim hover:text-signal hover:bg-signal/5 border-b border-white/5">Ledger</a>
+            <a href="#network" class="block px-6 py-3 text-xs font-mono uppercase text-dim hover:text-signal hover:bg-signal/5 border-b border-white/5">Network</a>
+            <a href="#telemetry" class="block px-6 py-3 text-xs font-mono uppercase text-dim hover:text-signal hover:bg-signal/5">Telemetry</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg">
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark/50 to-darker"></div>
-        
-        <!-- Animated Background Elements -->
-        <div class="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-float"></div>
-        <div class="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-[100px] animate-float" style="animation-delay: 2s;"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px]"></div>
+    <section class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+        <!-- Ambient orbs -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-signal/5 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/5 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s;"></div>
 
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-8 scroll-reveal">
-                <span class="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse"></span>
-                Market valued at $5.69B in 2026
-            </div>
-            
-            <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight scroll-reveal" style="transition-delay: 100ms;">
-                The Future of <br>
-                <span class="gradient-text">Decentralized Trust</span>
-            </h1>
-            
-            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 scroll-reveal" style="transition-delay: 200ms;">
-                Blockchain technology is revolutionizing how we verify transactions, manage assets, and build trust across industries—from finance to healthcare.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center scroll-reveal" style="transition-delay: 300ms;">
-                <a href="#how-it-works" class="px-8 py-4 rounded-lg bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:opacity-90 transition-opacity glow">
-                    Explore Technology
-                </a>
-                <a href="#use-cases" class="px-8 py-4 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/5 transition-colors">
-                    View Use Cases
-                </a>
+        <div class="max-w-[1400px] mx-auto px-6 w-full relative z-10">
+            <!-- Status ribbon -->
+            <div class="flex flex-wrap gap-3 mb-10 reveal">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-trace bg-panel/50">
+                    <span class="w-1.5 h-1.5 rounded-full bg-signal"></span>
+                    <span class="text-[10px] font-mono text-dim uppercase">Network: Operational</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-trace bg-panel/50">
+                    <i class="fa-solid fa-network-wired text-[10px] text-dim"></i>
+                    <span class="text-[10px] font-mono text-dim uppercase">Nodes: 14,892</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-trace bg-panel/50">
+                    <i class="fa-solid fa-cube text-[10px] text-dim"></i>
+                    <span class="text-[10px] font-mono text-dim uppercase">Block: 18,402,991</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-trace bg-panel/50">
+                    <i class="fa-solid fa-bolt text-[10px] text-dim"></i>
+                    <span class="text-[10px] font-mono text-dim uppercase">Latency: 12ms</span>
+                </div>
             </div>
 
-            <!-- Stats Row -->
-            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto scroll-reveal" style="transition-delay: 400ms;">
-                <div class="text-center">
-                    <div class="text-3xl font-display font-bold text-white">62.8%</div>
-                    <div class="text-sm text-gray-500 mt-1">CAGR Growth</div>
+            <div class="grid lg:grid-cols-12 gap-12 items-end">
+                <div class="lg:col-span-7 reveal" style="transition-delay: 100ms;">
+                    <h1 class="font-display text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tighter mb-8 kinetic">
+                        <span class="text-frost">The Architecture</span><br>
+                        <span class="gradient-text">of Trustless</span><br>
+                        <span class="text-dim">Consensus</span>
+                    </h1>
+                    
+                    <p class="text-base text-dim leading-relaxed mb-8 max-w-xl border-l-2 border-signal/30 pl-5">
+                        Blockchain is not merely a database—it is a mechanism for establishing distributed consensus without intermediaries. 
+                        In 2026, this mechanism secures <span class="text-frost font-medium">$33 billion</span> in tokenized assets across <span class="text-frost font-medium">137 sovereign networks</span>.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#ledger" class="group px-6 py-3 bg-signal text-void font-mono text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-frost transition-colors flex items-center gap-2">
+                            Inspect Ledger
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#protocol" class="px-6 py-3 border border-trace text-dim font-mono text-xs font-bold uppercase tracking-wider rounded-sm hover:border-signal/30 hover:text-signal transition-all">
+                            [ Protocol Specs ]
+                        </a>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-display font-bold text-white">400M+</div>
-                    <div class="text-sm text-gray-500 mt-1">Crypto Wallets</div>
+
+                <!-- Terminal Panel -->
+                <div class="lg:col-span-5 reveal" style="transition-delay: 200ms;">
+                    <div class="lux-panel p-5 h-72 flex flex-col">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+                            <div class="flex items-center gap-2">
+                                <div class="flex gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-alert/20 border border-alert/40"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-signal/20 border border-signal/40"></span>
+                                </div>
+                                <span class="text-[10px] font-mono text-dim ml-2">node_stream.log</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-signal animate-pulse">● LIVE</span>
+                        </div>
+                        <div id="terminal-feed" class="flex-1 overflow-hidden font-mono text-[11px] leading-relaxed space-y-1.5">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-display font-bold text-white">80+</div>
-                    <div class="text-sm text-gray-500 mt-1">CBDC Countries</div>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-px bg-trace/30 rounded-sm overflow-hidden reveal" style="transition-delay: 300ms;">
+                <div class="bg-surface p-6 text-center group hover:bg-panel transition-colors">
+                    <div class="text-3xl font-display font-bold text-frost mb-1 group-hover:text-signal transition-colors">$33.0B</div>
+                    <div class="text-[10px] font-mono text-dim uppercase tracking-wider">Market Cap 2026</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-3xl font-display font-bold text-white">$30B</div>
-                    <div class="text-sm text-gray-500 mt-1">Tokenized Assets</div>
+                <div class="bg-surface p-6 text-center group hover:bg-panel transition-colors">
+                    <div class="text-3xl font-display font-bold text-frost mb-1 group-hover:text-signal transition-colors">137</div>
+                    <div class="text-[10px] font-mono text-dim uppercase tracking-wider">CBDC Networks</div>
+                </div>
+                <div class="bg-surface p-6 text-center group hover:bg-panel transition-colors">
+                    <div class="text-3xl font-display font-bold text-frost mb-1 group-hover:text-signal transition-colors">$18.5B</div>
+                    <div class="text-[10px] font-mono text-dim uppercase tracking-wider">RWA Tokenized</div>
+                </div>
+                <div class="bg-surface p-6 text-center group hover:bg-panel transition-colors">
+                    <div class="text-3xl font-display font-bold text-frost mb-1 group-hover:text-signal transition-colors">$100B</div>
+                    <div class="text-[10px] font-mono text-dim uppercase tracking-wider">DeFi TVL Target</div>
                 </div>
             </div>
         </div>
 
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <i class="fa-solid fa-chevron-down text-gray-500 text-xl"></i>
+        <!-- Marquee -->
+        <div class="absolute bottom-0 left-0 right-0 border-t border-trace/50 bg-surface/80 backdrop-blur-sm py-3 overflow-hidden">
+            <div class="marquee-track whitespace-nowrap font-mono text-[10px] text-dim/40 uppercase tracking-widest">
+                <span class="mx-8">SHA-256: 0000000000000000000b3d8a7c4e8f9a2b1c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0</span>
+                <span class="mx-8">SHA-256: 0000000000000000000b3d8a7c4e8f9a2b1c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0</span>
+            </div>
         </div>
     </section>
 
-    <!-- Overview Section -->
-    <section id="overview" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="scroll-reveal">
-                    <h2 class="font-display text-4xl font-bold mb-6">What is <span class="gradient-text">Blockchain?</span></h2>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
-                        Blockchain is a shared digital ledger that records transactions across a distributed network of computers, making data tamper-resistant. Once something is written to the blockchain, it can't be changed without consensus from the network.
-                    </p>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
-                        Imagine a Google Sheet that everyone in a business can see and update, but once a row is added, it can't be altered or deleted without everyone agreeing. That's the basic idea—just with better math and stronger encryption.
-                    </p>
+    <!-- Protocol Section -->
+    <section id="protocol" class="py-24 relative">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-center gap-4 mb-16 reveal">
+                <span class="font-mono text-signal text-sm font-bold">01</span>
+                <div class="h-px flex-1 bg-gradient-to-r from-trace to-transparent"></div>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-frost tracking-tight">Protocol Architecture</h2>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Specs Panel -->
+                <div class="lux-panel p-8 reveal">
+                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+                        <h3 class="font-mono text-xs text-signal uppercase tracking-widest">Core Parameters</h3>
+                        <span class="text-[10px] font-mono text-dim">CONFIDENTIAL</span>
+                    </div>
                     
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fa-solid fa-shield-halved text-primary"></i>
+                    <div class="space-y-0">
+                        <div class="flex items-center justify-between py-4 border-b border-white/5 group hover:bg-white/[0.02] px-2 -mx-2 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-shield-halved text-dim text-xs w-4"></i>
+                                <span class="text-sm text-dim font-mono">CONSENSUS</span>
                             </div>
-                            <div>
-                                <h3 class="font-semibold text-white mb-1">Immutable Records</h3>
-                                <p class="text-sm text-gray-500">Once data is recorded, it cannot be altered retroactively without network consensus.</p>
-                            </div>
+                            <span class="text-sm text-frost font-medium">Proof of Stake / Hybrid BFT</span>
                         </div>
-                        <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fa-solid fa-network-wired text-secondary"></i>
+                        <div class="flex items-center justify-between py-4 border-b border-white/5 group hover:bg-white/[0.02] px-2 -mx-2 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-gauge-high text-dim text-xs w-4"></i>
+                                <span class="text-sm text-dim font-mono">THROUGHPUT</span>
                             </div>
-                            <div>
-                                <h3 class="font-semibold text-white mb-1">Decentralized</h3>
-                                <p class="text-sm text-gray-500">No single point of failure or control—data is distributed across thousands of nodes.</p>
-                            </div>
+                            <span class="text-sm text-frost font-medium">50,000 TPS <span class="text-dim text-xs">(L2)</span> / 15 TPS <span class="text-dim text-xs">(L1)</span></span>
                         </div>
-                        <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                <i class="fa-solid fa-file-contract text-accent"></i>
+                        <div class="flex items-center justify-between py-4 border-b border-white/5 group hover:bg-white/[0.02] px-2 -mx-2 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-clock text-dim text-xs w-4"></i>
+                                <span class="text-sm text-dim font-mono">FINALITY</span>
                             </div>
-                            <div>
-                                <h3 class="font-semibold text-white mb-1">Smart Contracts</h3>
-                                <p class="text-sm text-gray-500">Self-executing contracts with terms directly written into code, automating agreements.</p>
-                            </div>
+                            <span class="text-sm text-frost font-medium">~12 seconds</span>
                         </div>
+                        <div class="flex items-center justify-between py-4 border-b border-white/5 group hover:bg-white/[0.02] px-2 -mx-2 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-key text-dim text-xs w-4"></i>
+                                <span class="text-sm text-dim font-mono">CRYPTOGRAPHY</span>
+                            </div>
+                            <span class="text-sm text-frost font-medium">SHA-256 / ECDSA / zk-SNARKs</span>
+                        </div>
+                        <div class="flex items-center justify-between py-4 border-b border-white/5 group hover:bg-white/[0.02] px-2 -mx-2 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-microchip text-dim text-xs w-4"></i>
+                                <span class="text-sm text-dim font-mono">VM</span>
+                            </div>
+                            <span class="text-sm text-frost font-medium">EVM-Compatible / WASM</span>
+                        </div>
+                        <div class="flex items-center justify-between py-4 group hover:bg-white/[0.02] px-2 -mx-2 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-link text-dim text-xs w-4"></i>
+                                <span class="text-sm text-dim font-mono">INTEROP</span>
+                            </div>
+                            <span class="text-sm text-frost font-medium">IBC / CCIP / LayerZero</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-4 rounded-sm bg-alert/5 border border-alert/20">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-triangle-exclamation text-alert text-xs"></i>
+                            <span class="font-mono text-[10px] text-alert uppercase tracking-wider">Active Threat Model</span>
+                        </div>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-2 py-1 rounded-sm border border-alert/30 text-alert text-[10px] font-mono">51% ATTACK</span>
+                            <span class="px-2 py-1 rounded-sm border border-alert/30 text-alert text-[10px] font-mono">SYBIL</span>
+                            <span class="px-2 py-1 rounded-sm border border-alert/30 text-alert text-[10px] font-mono">FINALITY GRIEF</span>
+                            <span class="px-2 py-1 rounded-sm border border-signal/30 text-signal text-[10px] font-mono">MITIGATED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Viz Panel -->
+                <div class="lux-panel p-8 reveal" style="transition-delay: 100ms;">
+                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+                        <h3 class="font-mono text-xs text-signal uppercase tracking-widest">Network Topology</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal animate-pulse"></span>
+                            <span class="text-[10px] font-mono text-dim">P2P ACTIVE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="relative h-64 rounded-sm border border-trace bg-void overflow-hidden" id="network-viz">
+                        <canvas id="nodeCanvas" class="absolute inset-0 w-full h-full"></canvas>
+                        <div class="absolute bottom-4 left-4 right-4 flex justify-between font-mono text-[10px] text-dim">
+                            <span>Nodes: <span class="text-signal" id="node-count">0</span></span>
+                            <span>Connections: <span class="text-signal" id="conn-count">0</span></span>
+                            <span>Latency: <span class="text-signal">12ms</span></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <div class="lux-panel p-4 border border-white/5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-6 h-6 rounded-sm bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                                    <i class="fa-solid fa-layer-group text-purple-400 text-[10px]"></i>
+                                </div>
+                                <span class="text-xs font-mono text-frost">L1 Base</span>
+                            </div>
+                            <p class="text-[10px] text-dim font-mono">Settlement & Consensus Layer</p>
+                        </div>
+                        <div class="lux-panel p-4 border border-white/5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-6 h-6 rounded-sm bg-signal/10 border border-signal/20 flex items-center justify-center">
+                                    <i class="fa-solid fa-bolt text-signal text-[10px]"></i>
+                                </div>
+                                <span class="text-xs font-mono text-frost">L2 Execution</span>
+                            </div>
+                            <p class="text-[10px] text-dim font-mono">Rollups & State Channels</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ledger Section -->
+    <section id="ledger" class="py-24 relative border-y border-trace/30 bg-surface/30">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-center gap-4 mb-16 reveal">
+                <span class="font-mono text-signal text-sm font-bold">02</span>
+                <div class="h-px flex-1 bg-gradient-to-r from-trace to-transparent"></div>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-frost tracking-tight">Immutable Ledger</h2>
+            </div>
+
+            <!-- Block Explorer -->
+            <div class="lux-panel mb-12 reveal">
+                <div class="flex items-center justify-between p-5 border-b border-white/5 bg-panel/50">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-cubes text-signal"></i>
+                        <span class="font-mono text-xs text-signal uppercase tracking-widest">Block Explorer // Real-time</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="mineBlock()" class="group px-4 py-2 rounded-sm border border-signal/30 bg-signal/5 text-signal text-[11px] font-mono uppercase hover:bg-signal hover:text-void transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-hammer text-[10px]"></i>
+                            Mine Block
+                        </button>
+                        <button onclick="tamperBlock()" class="group px-4 py-2 rounded-sm border border-alert/30 bg-alert/5 text-alert text-[11px] font-mono uppercase hover:bg-alert hover:text-void transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-bug text-[10px]"></i>
+                            Tamper
+                        </button>
                     </div>
                 </div>
                 
-                <div class="relative scroll-reveal">
-                    <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-2xl"></div>
-                    <div class="relative glass rounded-2xl p-8 border border-white/10">
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-primary/30 transition-colors cursor-pointer group">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                                        <i class="fa-brands fa-bitcoin text-primary text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold text-white group-hover:text-primary transition-colors">Public Blockchain</div>
-                                        <div class="text-sm text-gray-500">Bitcoin, Ethereum</div>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-primary transition-colors"></i>
-                            </div>
-                            
-                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-secondary/30 transition-colors cursor-pointer group">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center">
-                                        <i class="fa-solid fa-building text-secondary text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold text-white group-hover:text-secondary transition-colors">Permissioned</div>
-                                        <div class="text-sm text-gray-500">Hyperledger, R3 Corda</div>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-secondary transition-colors"></i>
-                            </div>
-                            
-                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5 hover:border-accent/30 transition-colors cursor-pointer group">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
-                                        <i class="fa-solid fa-layer-group text-accent text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold text-white group-hover:text-accent transition-colors">Layer 2</div>
-                                        <div class="text-sm text-gray-500">Scaling Solutions</div>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-accent transition-colors"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-6 pt-6 border-t border-white/10">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-500">Consensus</span>
-                                <span class="text-white font-medium">Proof of Stake / Work</span>
-                            </div>
-                            <div class="flex justify-between text-sm mt-2">
-                                <span class="text-gray-500">Transaction Speed</span>
-                                <span class="text-white font-medium">7 TPS - 50,000+ TPS</span>
-                            </div>
-                        </div>
+                <div class="p-6 overflow-x-auto">
+                    <div class="flex gap-6 min-w-max pb-2" id="blockchain-viz">
+                        <!-- Blocks by JS -->
                     </div>
+                </div>
+                
+                <div class="p-4 border-t border-white/5 bg-panel/30 flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-signal text-xs" id="status-icon"></i>
+                    <span id="ledger-status" class="font-mono text-xs text-dim">CHAIN VERIFIED // ALL HASHES VALID // MERKLE ROOT CONFIRMED</span>
+                </div>
+            </div>
+
+            <!-- Hash Process -->
+            <div class="grid md:grid-cols-3 gap-6 reveal">
+                <div class="lux-panel p-6 group hover:border-signal/20 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-sm bg-signal/10 border border-signal/20 flex items-center justify-center">
+                            <span class="font-mono text-signal font-bold text-sm">01</span>
+                        </div>
+                        <h3 class="font-mono text-sm text-frost uppercase tracking-wider">Data Payload</h3>
+                    </div>
+                    <p class="text-sm text-dim leading-relaxed">
+                        Transactions, smart contract state changes, and oracle data are serialized into a structured byte array. Each payload carries a timestamp and nonce.
+                    </p>
+                </div>
+                <div class="lux-panel p-6 group hover:border-signal/20 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-sm bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                            <span class="font-mono text-purple-400 font-bold text-sm">02</span>
+                        </div>
+                        <h3 class="font-mono text-sm text-frost uppercase tracking-wider">Cryptographic Hash</h3>
+                    </div>
+                    <p class="text-sm text-dim leading-relaxed">
+                        SHA-256 digests the payload into a 64-character fingerprint. Alter a single bit, and the hash avalanche effect produces an entirely different output.
+                    </p>
+                </div>
+                <div class="lux-panel p-6 group hover:border-signal/20 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-sm bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                            <span class="font-mono text-blue-400 font-bold text-sm">03</span>
+                        </div>
+                        <h3 class="font-mono text-sm text-frost uppercase tracking-wider">Chained Consensus</h3>
+                    </div>
+                    <p class="text-sm text-dim leading-relaxed">
+                        Each block embeds the previous hash. To rewrite history, an attacker must recompute every subsequent block faster than the honest network.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Interactive -->
-    <section id="how-it-works" class="py-24 bg-dark/50 relative overflow-hidden">
-        <div class="absolute inset-0 grid-bg opacity-30"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16 scroll-reveal">
-                <h2 class="font-display text-4xl font-bold mb-4">How <span class="gradient-text">Blockchain Works</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Click on each block to see how data is secured through cryptographic hashing and chaining.</p>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-8 items-center scroll-reveal">
-                <!-- Block 1 -->
-                <div class="block-node glass rounded-xl p-6 border border-white/10 cursor-pointer" onclick="showBlockDetails(1)">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-mono text-primary">Block #1</span>
-                        <span class="text-xs text-gray-500">Genesis</span>
-                    </div>
-                    <div class="space-y-2 font-mono text-xs">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Data:</span>
-                            <span class="text-white">"Hello World"</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Nonce:</span>
-                            <span class="text-accent">2083236893</span>
-                        </div>
-                        <div class="pt-2 border-t border-white/10">
-                            <div class="text-gray-500 mb-1">Hash:</div>
-                            <div class="text-secondary break-all" id="hash-1">000000000019d6...</div>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-center">
-                        <i class="fa-solid fa-link text-gray-600 text-2xl"></i>
-                    </div>
-                </div>
-
-                <!-- Block 2 -->
-                <div class="block-node glass rounded-xl p-6 border border-white/10 cursor-pointer" onclick="showBlockDetails(2)">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-mono text-primary">Block #2</span>
-                        <span class="text-xs text-gray-500">Transaction</span>
-                    </div>
-                    <div class="space-y-2 font-mono text-xs">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Data:</span>
-                            <span class="text-white">"Alice -> Bob: 5 BTC"</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Nonce:</span>
-                            <span class="text-accent">1844444444</span>
-                        </div>
-                        <div class="pt-2 border-t border-white/10">
-                            <div class="text-gray-500 mb-1">Prev Hash:</div>
-                            <div class="text-gray-600 break-all text-[10px]">000000000019d6...</div>
-                            <div class="text-gray-500 mb-1 mt-2">Hash:</div>
-                            <div class="text-secondary break-all" id="hash-2">00000000839a8e...</div>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-center">
-                        <i class="fa-solid fa-link text-gray-600 text-2xl"></i>
-                    </div>
-                </div>
-
-                <!-- Block 3 -->
-                <div class="block-node glass rounded-xl p-6 border border-white/10 cursor-pointer" onclick="showBlockDetails(3)">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-mono text-primary">Block #3</span>
-                        <span class="text-xs text-gray-500">Smart Contract</span>
-                    </div>
-                    <div class="space-y-2 font-mono text-xs">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Data:</span>
-                            <span class="text-white">"Contract Executed"</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Nonce:</span>
-                            <span class="text-accent">2983236893</span>
-                        </div>
-                        <div class="pt-2 border-t border-white/10">
-                            <div class="text-gray-500 mb-1">Prev Hash:</div>
-                            <div class="text-gray-600 break-all text-[10px]">00000000839a8e...</div>
-                            <div class="text-gray-500 mb-1 mt-2">Hash:</div>
-                            <div class="text-secondary break-all" id="hash-3">000000007b7b6e...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Detail Panel -->
-            <div id="block-detail" class="mt-8 glass rounded-xl p-6 border border-primary/20 hidden scroll-reveal">
-                <div class="flex items-start space-x-4">
-                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-circle-info text-primary"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-display font-bold text-lg mb-2" id="detail-title">Block Details</h3>
-                        <p class="text-gray-400" id="detail-content">Click on a block above to see how cryptographic hashing links each block to the previous one, creating an immutable chain.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Use Cases Section -->
-    <section id="use-cases" class="py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16 scroll-reveal">
-                <h2 class="font-display text-4xl font-bold mb-4">Real-World <span class="gradient-text">Applications</span></h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Blockchain is solving real problems across every major industry in 2026.</p>
+    <!-- Network / Use Cases -->
+    <section id="network" class="py-24 relative">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-center gap-4 mb-16 reveal">
+                <span class="font-mono text-signal text-sm font-bold">03</span>
+                <div class="h-px flex-1 bg-gradient-to-r from-trace to-transparent"></div>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-frost tracking-tight">Network Layers</h2>
             </div>
 
             <!-- Tabs -->
-            <div class="flex flex-wrap justify-center gap-2 mb-12 scroll-reveal">
-                <button onclick="switchTab('finance')" id="tab-finance" class="tab-active px-6 py-2 rounded-full text-sm font-medium transition-all">Finance</button>
-                <button onclick="switchTab('supply')" id="tab-supply" class="px-6 py-2 rounded-full text-sm font-medium bg-white/5 text-gray-400 hover:bg-white/10 transition-all">Supply Chain</button>
-                <button onclick="switchTab('healthcare')" id="tab-healthcare" class="px-6 py-2 rounded-full text-sm font-medium bg-white/5 text-gray-400 hover:bg-white/10 transition-all">Healthcare</button>
-                <button onclick="switchTab('identity')" id="tab-identity" class="px-6 py-2 rounded-full text-sm font-medium bg-white/5 text-gray-400 hover:bg-white/10 transition-all">Identity</button>
-            </div>
-
-            <!-- Content -->
-            <div class="grid lg:grid-cols-2 gap-12 items-center scroll-reveal">
-                <div id="use-case-content">
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-                        <i class="fa-solid fa-landmark mr-2"></i>
-                        Financial Services
-                    </div>
-                    <h3 class="font-display text-3xl font-bold mb-4">Revolutionizing Global Finance</h3>
-                    <p class="text-gray-400 mb-6 leading-relaxed">
-                        Nearly 80% of financial institutions are piloting or deploying blockchain solutions. Cross-border payments that took 3-5 days now settle in under 10 minutes with up to 96% cost reduction using stablecoins and blockchain rails.
-                    </p>
-                    <ul class="space-y-3 mb-8">
-                        <li class="flex items-center space-x-3 text-gray-300">
-                            <i class="fa-solid fa-check text-primary"></i>
-                            <span>Instant settlement (T+0 instead of T+2/T+3)</span>
-                        </li>
-                        <li class="flex items-center space-x-3 text-gray-300">
-                            <i class="fa-solid fa-check text-primary"></i>
-                            <span>Automated compliance via smart contracts</span>
-                        </li>
-                        <li class="flex items-center space-x-3 text-gray-300">
-                            <i class="fa-solid fa-check text-primary"></i>
-                            <span>Tokenized real-world assets ($30B+ market)</span>
-                        </li>
-                        <li class="flex items-center space-x-3 text-gray-300">
-                            <i class="fa-solid fa-check text-primary"></i>
-                            <span>CBDC implementation in 80+ countries</span>
-                        </li>
-                    </ul>
-                    <div class="flex space-x-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-white">$4T+</div>
-                            <div class="text-xs text-gray-500">Stablecoin Volume</div>
-                        </div>
-                        <div class="w-px bg-white/10"></div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-white">96%</div>
-                            <div class="text-xs text-gray-500">Cost Reduction</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl blur-xl"></div>
-                    <div class="relative glass rounded-2xl p-6 border border-white/10">
-                        <div class="aspect-video rounded-lg bg-dark/50 flex items-center justify-center overflow-hidden">
-                            <div class="text-center">
-                                <i class="fa-solid fa-chart-line text-6xl text-primary/30 mb-4"></i>
-                                <div class="text-gray-500 text-sm">Financial Infrastructure Visualization</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 grid grid-cols-3 gap-4">
-                            <div class="text-center p-3 rounded-lg bg-white/5">
-                                <i class="fa-solid fa-money-bill-transfer text-primary mb-2"></i>
-                                <div class="text-xs text-gray-400">Payments</div>
-                            </div>
-                            <div class="text-center p-3 rounded-lg bg-white/5">
-                                <i class="fa-solid fa-file-signature text-secondary mb-2"></i>
-                                <div class="text-xs text-gray-400">DeFi</div>
-                            </div>
-                            <div class="text-center p-3 rounded-lg bg-white/5">
-                                <i class="fa-solid fa-coins text-accent mb-2"></i>
-                                <div class="text-xs text-gray-400">Tokenization</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2026 Trends -->
-    <section id="trends" class="py-24 bg-dark/50 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16 scroll-reveal">
-                <h2 class="font-display text-4xl font-bold mb-4">2026 <span class="gradient-text">Technology Trends</span></h2>
-                <p class="text-gray-400">The blockchain landscape is evolving rapidly. Here are the key trends shaping the industry.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="glass rounded-xl p-6 border border-white/5 card-hover scroll-reveal">
-                    <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-coins text-primary text-xl"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-lg mb-2">RWA Tokenization</h3>
-                    <p class="text-sm text-gray-400">Real-world asset tokenization has reached $30 billion, with 57% of institutions planning investments. Real estate, commodities, and equities are going on-chain.</p>
-                </div>
-
-                <div class="glass rounded-xl p-6 border border-white/5 card-hover scroll-reveal" style="transition-delay: 100ms;">
-                    <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-brain text-secondary text-xl"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-lg mb-2">AI + Blockchain</h3>
-                    <p class="text-sm text-gray-400">The blockchain AI market is projected to reach $1.88 billion by 2029. AI provides analytics while blockchain ensures data integrity.</p>
-                </div>
-
-                <div class="glass rounded-xl p-6 border border-white/5 card-hover scroll-reveal" style="transition-delay: 200ms;">
-                    <div class="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-layer-group text-accent text-xl"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-lg mb-2">Layer 2 Scaling</h3>
-                    <p class="text-sm text-gray-400">Essential for high-demand applications in gaming, payments, and marketplaces—enabling fast, low-cost transactions without compromising security.</p>
-                </div>
-
-                <div class="glass rounded-xl p-6 border border-white/5 card-hover scroll-reveal">
-                    <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-link text-purple-500 text-xl"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-lg mb-2">Interoperability</h3>
-                    <p class="text-sm text-gray-400">Cross-chain protocols are breaking down barriers between isolated networks, allowing seamless asset and data transfer across ecosystems.</p>
-                </div>
-
-                <div class="glass rounded-xl p-6 border border-white/5 card-hover scroll-reveal" style="transition-delay: 100ms;">
-                    <div class="w-12 h-12 rounded-lg bg-pink-500/10 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-user-secret text-pink-500 text-xl"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-lg mb-2">Zero-Knowledge Proofs</h3>
-                    <p class="text-sm text-gray-400">Privacy-preserving verification is becoming fundamental infrastructure for digital identity, confidential transactions, and regulatory compliance.</p>
-                </div>
-
-                <div class="glass rounded-xl p-6 border border-white/5 card-hover scroll-reveal" style="transition-delay: 200ms;">
-                    <div class="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-building-columns text-orange-500 text-xl"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-lg mb-2">CBDCs</h3>
-                    <p class="text-sm text-gray-400">Over 80 countries have moved from pilot to active implementation of Central Bank Digital Currencies, reshaping national payment rails.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Market Data -->
-    <section id="market" class="py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="scroll-reveal">
-                    <h2 class="font-display text-4xl font-bold mb-6">Market <span class="gradient-text">Outlook</span></h2>
-                    <p class="text-gray-400 text-lg mb-8">
-                        The blockchain technology market is estimated at <strong class="text-white">$5.69 billion in 2026</strong> and is expected to reach <strong class="text-white">$172.5 billion by 2033</strong>, growing at a CAGR of 62.8%.
-                    </p>
-
-                    <div class="space-y-6">
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm font-medium text-gray-300">North America</span>
-                                <span class="text-sm font-bold text-primary">47.0%</span>
-                            </div>
-                            <div class="w-full bg-white/5 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 47%"></div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm font-medium text-gray-300">Europe</span>
-                                <span class="text-sm font-bold text-secondary">25.7%</span>
-                            </div>
-                            <div class="w-full bg-white/5 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-secondary to-purple-400 h-2 rounded-full" style="width: 25.7%"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span class="text-sm font-medium text-gray-300">Asia Pacific</span>
-                                <span class="text-sm font-bold text-accent">18.3%</span>
-                            </div>
-                            <div class="w-full bg-white/5 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-accent to-cyan-400 h-2 rounded-full" style="width: 18.3%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 p-6 rounded-xl bg-white/5 border border-white/10">
-                        <h4 class="font-semibold text-white mb-4">Key Growth Drivers</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-arrow-trend-up text-primary text-sm"></i>
-                                <span class="text-sm text-gray-400">Crypto adoption</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-arrow-trend-up text-primary text-sm"></i>
-                                <span class="text-sm text-gray-400">Enterprise DeFi</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-arrow-trend-up text-primary text-sm"></i>
-                                <span class="text-sm text-gray-400">Supply chain needs</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-arrow-trend-up text-primary text-sm"></i>
-                                <span class="text-sm text-gray-400">Regulatory clarity</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative scroll-reveal">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 via-secondary/20 to-accent/20 rounded-2xl blur-2xl"></div>
-                    <div class="relative glass rounded-2xl p-8 border border-white/10">
-                        <div class="text-center mb-6">
-                            <div class="text-5xl font-display font-bold gradient-text mb-2">$172.5B</div>
-                            <div class="text-gray-400">Projected Market Size by 2033</div>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                                        <i class="fa-solid fa-wallet text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <div class="text-white font-medium">Payment Segment</div>
-                                        <div class="text-xs text-gray-500">Highest market share</div>
-                                    </div>
-                                </div>
-                                <div class="text-primary font-bold">#1</div>
-                            </div>
-
-                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
-                                        <i class="fa-solid fa-building text-secondary"></i>
-                                    </div>
-                                    <div>
-                                        <div class="text-white font-medium">BFSI Industry</div>
-                                        <div class="text-xs text-gray-500">Leading adopter</div>
-                                    </div>
-                                </div>
-                                <div class="text-secondary font-bold">#1</div>
-                            </div>
-
-                            <div class="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/5">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                                        <i class="fa-solid fa-globe text-accent"></i>
-                                    </div>
-                                    <div>
-                                        <div class="text-white font-medium">Public Blockchain</div>
-                                        <div class="text-xs text-gray-500">57.6% share</div>
-                                    </div>
-                                </div>
-                                <div class="text-accent font-bold">57.6%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-24 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-dark/0 via-primary/5 to-dark/0"></div>
-        <div class="max-w-4xl mx-auto px-4 text-center relative z-10 scroll-reveal">
-            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Ready to Build on the <span class="gradient-text">Blockchain?</span></h2>
-            <p class="text-gray-400 text-lg mb-8">
-                Whether you're exploring DeFi, supply chain transparency, or digital identity, the infrastructure is ready. The question is: what will you build?
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="px-8 py-4 rounded-lg bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:opacity-90 transition-opacity glow">
-                    Start Building
+            <div class="flex flex-wrap gap-2 mb-10 reveal">
+                <button onclick="setLayer('finance')" id="tab-finance" class="tab-active px-6 py-3 rounded-sm font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-landmark text-[10px]"></i> Finance
                 </button>
-                <button class="px-8 py-4 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/5 transition-colors">
-                    Read Documentation
+                <button onclick="setLayer('identity')" id="tab-identity" class="tab-inactive px-6 py-3 rounded-sm font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-fingerprint text-[10px]"></i> Identity
                 </button>
+                <button onclick="setLayer('supply')" id="tab-supply" class="tab-inactive px-6 py-3 rounded-sm font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-truck-fast text-[10px]"></i> Supply Chain
+                </button>
+                <button onclick="setLayer('ai')" id="tab-ai" class="tab-inactive px-6 py-3 rounded-sm font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-brain text-[10px]"></i> AI × Chain
+                </button>
+            </div>
+
+            <div id="layer-content" class="reveal">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Telemetry -->
+    <section id="telemetry" class="py-24 relative border-y border-trace/30 bg-surface/30">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-center gap-4 mb-16 reveal">
+                <span class="font-mono text-signal text-sm font-bold">04</span>
+                <div class="h-px flex-1 bg-gradient-to-r from-trace to-transparent"></div>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-frost tracking-tight">Telemetry</h2>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="grid lg:grid-cols-4 gap-px bg-trace/20 rounded-sm overflow-hidden mb-12 reveal">
+                <div class="bg-surface p-8 group hover:bg-panel transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-solid fa-chart-line text-dim group-hover:text-signal transition-colors"></i>
+                        <span class="text-[10px] font-mono text-signal bg-signal/10 px-2 py-0.5 rounded-sm">+43% CAGR</span>
+                    </div>
+                    <div class="text-4xl font-display font-bold text-frost mb-1">$33.0B</div>
+                    <div class="text-xs font-mono text-dim uppercase tracking-wider">Market Cap 2026</div>
+                </div>
+                <div class="bg-surface p-8 group hover:bg-panel transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-solid fa-coins text-dim group-hover:text-signal transition-colors"></i>
+                        <span class="text-[10px] font-mono text-signal bg-signal/10 px-2 py-0.5 rounded-sm">3x YoY</span>
+                    </div>
+                    <div class="text-4xl font-display font-bold text-frost mb-1">$18.5B</div>
+                    <div class="text-xs font-mono text-dim uppercase tracking-wider">RWA Tokenized</div>
+                </div>
+                <div class="bg-surface p-8 group hover:bg-panel transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-solid fa-globe text-dim group-hover:text-signal transition-colors"></i>
+                        <span class="text-[10px] font-mono text-signal bg-signal/10 px-2 py-0.5 rounded-sm">49 Active</span>
+                    </div>
+                    <div class="text-4xl font-display font-bold text-frost mb-1">137</div>
+                    <div class="text-xs font-mono text-dim uppercase tracking-wider">CBDC Countries</div>
+                </div>
+                <div class="bg-surface p-8 group hover:bg-panel transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fa-solid fa-vault text-dim group-hover:text-signal transition-colors"></i>
+                        <span class="text-[10px] font-mono text-signal bg-signal/10 px-2 py-0.5 rounded-sm">Target</span>
+                    </div>
+                    <div class="text-4xl font-display font-bold text-frost mb-1">$100B</div>
+                    <div class="text-xs font-mono text-dim uppercase tracking-wider">DeFi TVL 2026</div>
+                </div>
+            </div>
+
+            <!-- Growth Chart -->
+            <div class="lux-panel p-8 reveal">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-mono text-xs text-signal uppercase tracking-widest">Growth Trajectory (2026-2030)</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-sm bg-signal"></span>
+                        <span class="text-[10px] font-mono text-dim">Projected</span>
+                    </div>
+                </div>
+                <div class="relative h-72 w-full">
+                    <canvas id="growthChart" class="w-full h-full"></canvas>
+                </div>
+                <div class="mt-6 flex justify-between font-mono text-[10px] text-dim uppercase tracking-wider">
+                    <span>2026: $33B</span>
+                    <span>2027: $60B</span>
+                    <span>2028: $100B</span>
+                    <span>2029: $200B</span>
+                    <span>2030: $393B</span>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="border-t border-white/5 py-12 bg-darker">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <i class="fa-solid fa-cube text-primary text-xl"></i>
-                        <span class="font-display font-bold text-lg">Chain<span class="text-primary">Tech</span></span>
+    <footer class="py-16 bg-void border-t border-trace/30">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="grid md:grid-cols-12 gap-12 mb-12">
+                <div class="md:col-span-4">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 rounded-sm bg-signal/10 border border-signal/30 flex items-center justify-center">
+                            <i class="fa-solid fa-cube text-signal text-sm"></i>
+                        </div>
+                        <span class="font-display font-bold text-xl tracking-tight text-frost">NEXUS<span class="text-signal">/</span>CHAIN</span>
                     </div>
-                    <p class="text-sm text-gray-500">Exploring the future of decentralized technology and digital trust.</p>
+                    <p class="text-sm text-dim leading-relaxed mb-6">
+                        Distributed consensus architecture for the post-trust era. 
+                        Building infrastructure that doesn't require faith—only math.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-9 h-9 rounded-sm border border-trace flex items-center justify-center text-dim hover:text-signal hover:border-signal/30 transition-all">
+                            <i class="fa-brands fa-github text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-sm border border-trace flex items-center justify-center text-dim hover:text-signal hover:border-signal/30 transition-all">
+                            <i class="fa-brands fa-twitter text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-sm border border-trace flex items-center justify-center text-dim hover:text-signal hover:border-signal/30 transition-all">
+                            <i class="fa-brands fa-discord text-sm"></i>
+                        </a>
+                    </div>
                 </div>
-                <div>
-                    <h4 class="font-semibold text-white mb-4">Technology</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-primary transition-colors">Smart Contracts</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Consensus Mechanisms</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Layer 2 Scaling</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Zero Knowledge</a></li>
+                
+                <div class="md:col-span-2">
+                    <h4 class="font-mono text-xs text-signal uppercase tracking-widest mb-4">Protocol</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">Consensus</a></li>
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">Cryptography</a></li>
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">Smart Contracts</a></li>
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">Interoperability</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="font-semibold text-white mb-4">Industries</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-primary transition-colors">Finance</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Healthcare</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Supply Chain</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Real Estate</a></li>
+                
+                <div class="md:col-span-2">
+                    <h4 class="font-mono text-xs text-signal uppercase tracking-widest mb-4">Network</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">DeFi</a></li>
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">RWA</a></li>
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">Identity</a></li>
+                        <li><a href="#" class="text-sm text-dim hover:text-frost transition-colors">Supply Chain</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="font-semibold text-white mb-4">Resources</h4>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-primary transition-colors">Documentation</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Whitepapers</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Developer Portal</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Community</a></li>
-                    </ul>
+                
+                <div class="md:col-span-4">
+                    <h4 class="font-mono text-xs text-signal uppercase tracking-widest mb-4">Node Status</h4>
+                    <div class="lux-panel p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-dim font-mono">Mainnet</span>
+                            <span class="text-xs text-signal font-mono flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-signal"></span>
+                                SYNCED
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-dim font-mono">Testnet</span>
+                            <span class="text-xs text-signal font-mono flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-signal"></span>
+                                SYNCED
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-dim font-mono">Peers</span>
+                            <span class="text-xs text-frost font-mono">128 active</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-dim font-mono">Block Height</span>
+                            <span class="text-xs text-frost font-mono">18,402,991</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-gray-600"> 2026 ChainTech. Educational content.</p>
-                <div class="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa-brands fa-discord"></i></a>
-                </div>
+            
+            <div class="pt-8 border-t border-trace/20 flex flex-col md:flex-row justify-between items-center gap-4">
+                <span class="text-xs font-mono text-dim">© 2026 NEXUS/CHAIN SYSTEMS. All rights reserved.</span>
+                <span class="text-[10px] font-mono text-dim/50">HASH: 0000000000000000000b3d8a7c4e8f9a2b1c3d4e...</span>
             </div>
         </div>
     </footer>
 
     <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+        // === MOBILE MENU ===
+        function toggleMobile() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // Scroll reveal animation
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
+        // === TERMINAL FEED ===
+        const feedLines = [
+            "[14:02:01] Block mined: #18402991 | Hash: 0000000000...b3d8",
+            "[14:02:00] TX: 0x7a3f... → 0x9b2e... | 4.2 ETH | Gas: 21k",
+            "[14:01:58] Peer connected: 192.168.x.x:30303",
+            "[14:01:55] Contract exec: 0xdef1... | DeFi swap $50k",
+            "[14:01:52] ZK-Proof verified: batch #8921 | 247 txs",
+            "[14:01:48] Bridge: Ethereum → Arbitrum | 12.5 ETH",
+            "[14:01:45] Validator rotation: set #4,891 complete",
+            "[14:01:42] RWA settlement: $2.4M tokenized T-Bill",
+            "[14:01:38] CBDC: e-CNY corridor active | ¥500K tx",
+            "[14:01:35] Oracle update: ETH/USD $3,247.18 | ±0.02%"
+        ];
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
-
-        // Block details interaction
-        function showBlockDetails(blockNum) {
-            const detailPanel = document.getElementById('block-detail');
-            const title = document.getElementById('detail-title');
-            const content = document.getElementById('detail-content');
+        function updateFeed() {
+            const container = document.getElementById('terminal-feed');
+            if (!container) return;
             
-            detailPanel.classList.remove('hidden');
+            const line = feedLines[Math.floor(Math.random() * feedLines.length)];
+            const div = document.createElement('div');
+            div.className = 'text-dim/60 font-mono';
+            div.innerHTML = `<span class="text-signal/40">></span> ${line}`;
+            container.appendChild(div);
             
-            const details = {
-                1: {
-                    title: "Genesis Block (Block #1)",
-                    content: "The first block in the chain, also known as the Genesis Block. It has no previous hash (or uses a default value). The hash starts with multiple zeros because it was mined to meet the network's difficulty target. This process is called Proof of Work."
-                },
-                2: {
-                    title: "Transaction Block (Block #2)",
-                    content: "This block contains a transaction: 'Alice sends 5 BTC to Bob'. It includes the hash of Block #1 in its 'Prev Hash' field, creating the cryptographic link. If anyone tries to change Block #1's data, Block #2's hash would become invalid, breaking the chain."
-                },
-                3: {
-                    title: "Smart Contract Block (Block #3)",
-                    content: "This block executes a smart contract—a self-executing agreement with terms written in code. It contains the hash of Block #2, continuing the immutable chain. Smart contracts automatically enforce and execute agreements without intermediaries."
+            if (container.children.length > 9) {
+                container.removeChild(container.firstChild);
+            }
+        }
+        setInterval(updateFeed, 1800);
+        for (let i = 0; i < 6; i++) updateFeed();
+
+        // === NETWORK VISUALIZATION ===
+        const canvas = document.getElementById('nodeCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let nodes = [];
+            let animId;
+
+            function resize() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+
+            function init() {
+                nodes = [];
+                const count = 30;
+                for (let i = 0; i < count; i++) {
+                    nodes.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: (Math.random() - 0.5) * 0.4,
+                        r: Math.random() * 2 + 1
+                    });
                 }
+                document.getElementById('node-count').textContent = count;
+            }
+
+            function draw() {
+                ctx.fillStyle = '#050505';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                let conns = 0;
+                ctx.strokeStyle = 'rgba(0, 229, 160, 0.08)';
+                ctx.lineWidth = 0.5;
+
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const dx = nodes[i].x - nodes[j].x;
+                        const dy = nodes[i].y - nodes[j].y;
+                        const d = Math.sqrt(dx*dx + dy*dy);
+                        if (d < 90) {
+                            ctx.beginPath();
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            ctx.stroke();
+                            conns++;
+                        }
+                    }
+                }
+                document.getElementById('conn-count').textContent = conns;
+
+                nodes.forEach(n => {
+                    n.x += n.vx;
+                    n.y += n.vy;
+                    if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+                    if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                    ctx.fillStyle = '#00e5a0';
+                    ctx.fill();
+                });
+
+                animId = requestAnimationFrame(draw);
+            }
+
+            resize();
+            init();
+            draw();
+            window.addEventListener('resize', () => { resize(); init(); });
+        }
+
+        // === BLOCKCHAIN VISUALIZATION ===
+        let blockHeight = 18402988;
+        let chain = [];
+        let prevHash = '00000000000000000000000000000000';
+
+        function genBlock(prev, idx) {
+            const payloads = [
+                "Alice→Bob: 5.0 BTC",
+                "Contract: 0xdef1...exec",
+                "RWA: $2.4M T-Bill",
+                "CBDC: ¥500K transfer",
+                "ZK-Batch: #8921"
+            ];
+            const hash = '0000000000' + Math.random().toString(36).substring(2, 15);
+            return {
+                index: idx,
+                time: new Date().toLocaleTimeString('en-US', {hour12: false}),
+                data: payloads[Math.floor(Math.random() * payloads.length)],
+                prev: prev.substring(0, 20) + '...',
+                hash: hash.substring(0, 16) + '...',
+                fullHash: hash,
+                tampered: false
             };
+        }
+
+        for (let i = 0; i < 4; i++) {
+            const b = genBlock(prevHash, blockHeight + i);
+            chain.push(b);
+            prevHash = b.fullHash;
+        }
+
+        function renderChain() {
+            const container = document.getElementById('blockchain-viz');
+            container.innerHTML = '';
             
-            title.textContent = details[blockNum].title;
-            content.textContent = details[blockNum].content;
-            
-            // Highlight the selected block
-            document.querySelectorAll('.block-node').forEach((node, index) => {
-                if (index === blockNum - 1) {
-                    node.style.borderColor = 'rgba(99, 102, 241, 0.8)';
-                    node.style.boxShadow = '0 0 30px rgba(99, 102, 241, 0.3)';
-                } else {
-                    node.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    node.style.boxShadow = 'none';
-                }
+            chain.forEach((b, i) => {
+                const div = document.createElement('div');
+                div.className = `w-60 flex-shrink-0 lux-panel p-4 block-hover ${i < chain.length - 1 ? 'chain-connector' : ''}`;
+                if (b.tampered) div.classList.add('border-alert/40');
+                
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-white/5">
+                        <span class="font-mono text-xs font-bold ${b.tampered ? 'text-alert' : 'text-frost'}">BLOCK #${b.index}</span>
+                        <span class="font-mono text-[10px] text-dim">${b.time}</span>
+                    </div>
+                    <div class="font-mono text-[10px] text-dim mb-1">PREV HASH</div>
+                    <div class="font-mono text-[9px] text-dim/50 mb-3 truncate">${b.prev}</div>
+                    <div class="p-2.5 rounded-sm bg-panel/80 border border-white/5 mb-3">
+                        <div class="font-mono text-[10px] text-dim uppercase mb-1">Payload</div>
+                        <div class="font-mono text-xs text-frost">${b.data}</div>
+                    </div>
+                    <div class="font-mono text-[10px] text-dim mb-1">HASH</div>
+                    <div class="font-mono text-[9px] ${b.tampered ? 'text-alert' : 'text-signal'}">${b.hash}</div>
+                `;
+                container.appendChild(div);
             });
         }
 
-        // Use case tabs
-        const useCases = {
+        function mineBlock() {
+            const last = chain[chain.length - 1];
+            const nb = genBlock(last.fullHash, last.index + 1);
+            chain.push(nb);
+            if (chain.length > 6) chain.shift();
+            renderChain();
+            setStatus('NEW BLOCK MINED // CHAIN EXTENDED // ALL HASHES VALID', false);
+        }
+
+        function tamperBlock() {
+            if (chain.length > 1) {
+                const idx = Math.floor(Math.random() * (chain.length - 1));
+                chain[idx].data = '**CORRUPTED** ' + Math.random().toString(36).substring(2, 6);
+                chain[idx].tampered = true;
+                for (let i = idx + 1; i < chain.length; i++) chain[i].tampered = true;
+                renderChain();
+                setStatus(`ALERT: HASH MISMATCH // BLOCK ${chain[idx].index} CORRUPTED // CONSENSUS BROKEN`, true);
+            }
+        }
+
+        function setStatus(msg, isAlert) {
+            const icon = document.getElementById('status-icon');
+            const text = document.getElementById('ledger-status');
+            icon.className = isAlert ? 'fa-solid fa-triangle-exclamation text-alert text-xs' : 'fa-solid fa-circle-check text-signal text-xs';
+            text.textContent = msg;
+            text.className = isAlert ? 'font-mono text-xs text-alert' : 'font-mono text-xs text-dim';
+        }
+
+        renderChain();
+
+        // === LAYER TABS ===
+        const layerData = {
             finance: {
                 icon: 'fa-landmark',
-                label: 'Financial Services',
-                title: 'Revolutionizing Global Finance',
-                content: 'Nearly 80% of financial institutions are piloting or deploying blockchain solutions. Cross-border payments that took 3-5 days now settle in under 10 minutes with up to 96% cost reduction using stablecoins and blockchain rails.',
-                stats: [
-                    { label: 'Stablecoin Volume', value: '$4T+' },
-                    { label: 'Cost Reduction', value: '96%' }
+                title: 'Institutional Finance',
+                desc: 'Nearly 80% of financial institutions pilot blockchain solutions. Cross-border settlement compressed from T+3 to T+0. BlackRock BUIDL crossed $500M in tokenized Treasuries. The DeFi market targets $100B valuation in 2026.',
+                metrics: [
+                    { label: 'Settlement Speed', value: 'T+0' },
+                    { label: 'Cost Reduction', value: '96%' },
+                    { label: 'Stablecoin Vol', value: '$4T+' }
                 ],
-                features: [
-                    'Instant settlement (T+0 instead of T+2/T+3)',
-                    'Automated compliance via smart contracts',
-                    'Tokenized real-world assets ($30B+ market)',
-                    'CBDC implementation in 80+ countries'
-                ]
+                features: ['Tokenized Securities', 'Institutional DeFi', 'CBDC Rails', 'Cross-border RTGS'],
+                color: 'signal'
+            },
+            identity: {
+                icon: 'fa-fingerprint',
+                title: 'Self-Sovereign Identity',
+                desc: 'Decentralized identifiers (DIDs) give users cryptographic control over credentials. Zero-knowledge proofs verify KYC without exposing underlying data. EU EBSI program verifies academic credentials across member states.',
+                metrics: [
+                    { label: 'Verification', value: 'Instant' },
+                    { label: 'Fraud Reduction', value: '82%' },
+                    { label: 'DIDs Active', value: '50M+' }
+                ],
+                features: ['ZK-KYC', 'Verifiable Credentials', 'Biometric Anchoring', 'Cross-border eID'],
+                color: 'purple'
             },
             supply: {
                 icon: 'fa-truck-fast',
-                label: 'Supply Chain',
-                title: 'Transparent Global Logistics',
-                content: 'Blockchain reduces administrative costs by up to 30% and improves supply chain resilience. Walmart reduced mango traceability time from days to seconds, enabling rapid recalls. Maersk reduced transit times by 40% through real-time documentation sharing.',
-                stats: [
-                    { label: 'Cost Reduction', value: '30%' },
-                    { label: 'Time Saved', value: '40%' }
+                title: 'Supply Chain Provenance',
+                desc: 'Walmart reduced traceability from 7 days to 2.2 seconds. Blockchain cuts administrative costs by 30% and enables real-time ESG reporting. Lot-level tracking now standard for pharma and luxury goods.',
+                metrics: [
+                    { label: 'Traceability', value: '2.2s' },
+                    { label: 'Cost Cut', value: '30%' },
+                    { label: 'Transit Time', value: '-40%' }
                 ],
-                features: [
-                    'Real-time provenance tracking',
-                    'IoT integration for automated monitoring',
-                    'Tamper-proof digital certificates',
-                    'Rapid recall capabilities'
-                ]
+                features: ['Lot Tracking', 'Anti-counterfeit', 'Carbon Reporting', 'IoT Integration'],
+                color: 'blue'
             },
-            healthcare: {
-                icon: 'fa-heart-pulse',
-                label: 'Healthcare',
-                title: 'Secure Patient Data Management',
-                content: 'Over 55% of healthcare applications now incorporate blockchain protocols. Patients control their own data through cryptographically-signed consent. Clinical trial data becomes immutable, increasing regulatory approval speed for life-saving drugs.',
-                stats: [
-                    { label: 'Apps Using Blockchain', value: '55%' },
-                    { label: 'Data Ownership', value: 'Patient' }
+            ai: {
+                icon: 'fa-brain',
+                title: 'AI × Blockchain Convergence',
+                desc: 'Blockchain anchors trust in AI systems—tracking data provenance, decentralizing compute, and verifying agent behavior. Bittensor coordinates AI models via token incentives. Market projected at $1.88B by 2029.',
+                metrics: [
+                    { label: 'Market 2029', value: '$1.88B' },
+                    { label: 'Data Provenance', value: '100%' },
+                    { label: 'Model Audit', value: 'On-chain' }
                 ],
-                features: [
-                    'Unified electronic health records',
-                    'Patient-controlled data sharing',
-                    'Drug traceability and authentication',
-                    'Immutable clinical trial records'
-                ]
-            },
-            identity: {
-                icon: 'fa-id-card',
-                label: 'Digital Identity',
-                title: 'Self-Sovereign Identity',
-                content: 'Blockchain enables decentralized digital identity, giving users control over their personal data. KYC verification that traditionally took weeks can now be instant through shared ledgers, while zero-knowledge proofs verify credentials without revealing underlying data.',
-                stats: [
-                    { label: 'Verification Time', value: 'Instant' },
-                    { label: 'Fraud Reduction', value: '82%' }
-                ],
-                features: [
-                    'User-controlled identity',
-                    'Instant KYC/AML verification',
-                    'Zero-knowledge privacy',
-                    'Cross-border credential recognition'
-                ]
+                features: ['Decentralized Compute', 'Model Provenance', 'Agent Coordination', 'Data Monetization'],
+                color: 'pink'
             }
         };
 
-        function switchTab(tabName) {
-            // Update buttons
+        function setLayer(layer) {
             document.querySelectorAll('[id^="tab-"]').forEach(btn => {
                 btn.classList.remove('tab-active');
-                btn.classList.add('bg-white/5', 'text-gray-400');
+                btn.classList.add('tab-inactive');
             });
+            document.getElementById(`tab-${layer}`).classList.remove('tab-inactive');
+            document.getElementById(`tab-${layer}`).classList.add('tab-active');
+
+            const d = layerData[layer];
+            const c = document.getElementById('layer-content');
             
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            activeBtn.classList.add('tab-active');
-            activeBtn.classList.remove('bg-white/5', 'text-gray-400');
+            c.innerHTML = `
+                <div class="grid lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-7 lux-panel p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-sm bg-${d.color}-500/10 border border-${d.color}-500/20 flex items-center justify-center">
+                                <i class="fa-solid ${d.icon} text-${d.color}-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-display text-xl font-bold text-frost">${d.title}</h3>
+                            </div>
+                        </div>
+                        <p class="text-sm text-dim leading-relaxed mb-8">${d.desc}</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            ${d.features.map(f => `
+                                <div class="flex items-center gap-3 p-3 rounded-sm bg-panel/50 border border-white/5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-${d.color}-400"></span>
+                                    <span class="text-xs font-mono text-frost">${f}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 lux-panel p-8 bg-panel/30">
+                        <div class="font-mono text-[10px] text-${d.color}-400 uppercase tracking-widest mb-6">Performance Metrics</div>
+                        <div class="space-y-6">
+                            ${d.metrics.map(m => `
+                                <div>
+                                    <div class="flex justify-between font-mono text-xs text-frost mb-2">
+                                        <span>${m.label}</span>
+                                        <span class="text-${d.color}-400">${m.value}</span>
+                                    </div>
+                                    <div class="h-1.5 rounded-full bg-trace overflow-hidden">
+                                        <div class="h-full rounded-full bg-${d.color}-400 progress-stripes" style="width: ${Math.random() * 30 + 65}%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        setLayer('finance');
+
+        // === GROWTH CHART ===
+        const gCanvas = document.getElementById('growthChart');
+        if (gCanvas) {
+            const ctx = gCanvas.getContext('2d');
             
-            // Update content with animation
-            const contentDiv = document.getElementById('use-case-content');
-            contentDiv.style.opacity = '0';
-            contentDiv.style.transform = 'translateY(10px)';
-            contentDiv.style.transition = 'all 0.3s ease';
+            function drawChart() {
+                const rect = gCanvas.parentElement.getBoundingClientRect();
+                gCanvas.width = rect.width;
+                gCanvas.height = rect.height;
+                
+                const w = gCanvas.width, h = gCanvas.height;
+                const pad = 50;
+                
+                ctx.clearRect(0, 0, w, h);
+                
+                // Grid
+                ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= 4; i++) {
+                    const y = pad + (h - 2*pad) * (i/4);
+                    ctx.beginPath();
+                    ctx.moveTo(pad, y);
+                    ctx.lineTo(w - pad, y);
+                    ctx.stroke();
+                }
+                
+                const data = [33, 60, 100, 200, 393];
+                const max = 450;
+                const step = (w - 2*pad) / (data.length - 1);
+                
+                // Area fill
+                ctx.beginPath();
+                data.forEach((v, i) => {
+                    const x = pad + i*step;
+                    const y = h - pad - (v/max)*(h - 2*pad);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else {
+                        const prevX = pad + (i-1)*step;
+                        const prevY = h - pad - (data[i-1]/max)*(h - 2*pad);
+                        const cpX = (prevX + x) / 2;
+                        ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+                    }
+                });
+                ctx.lineTo(pad + (data.length-1)*step, h - pad);
+                ctx.lineTo(pad, h - pad);
+                ctx.closePath();
+                
+                const grad = ctx.createLinearGradient(0, pad, 0, h - pad);
+                grad.addColorStop(0, 'rgba(0, 229, 160, 0.15)');
+                grad.addColorStop(1, 'rgba(0, 229, 160, 0)');
+                ctx.fillStyle = grad;
+                ctx.fill();
+                
+                // Line
+                ctx.beginPath();
+                data.forEach((v, i) => {
+                    const x = pad + i*step;
+                    const y = h - pad - (v/max)*(h - 2*pad);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else {
+                        const prevX = pad + (i-1)*step;
+                        const prevY = h - pad - (data[i-1]/max)*(h - 2*pad);
+                        const cpX = (prevX + x) / 2;
+                        ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+                    }
+                });
+                ctx.strokeStyle = '#00e5a0';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Points
+                data.forEach((v, i) => {
+                    const x = pad + i*step;
+                    const y = h - pad - (v/max)*(h - 2*pad);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI*2);
+                    ctx.fillStyle = '#050505';
+                    ctx.fill();
+                    ctx.strokeStyle = '#00e5a0';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = '#e2e8f0';
+                    ctx.font = '11px "JetBrains Mono"';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('$' + v + 'B', x, y - 12);
+                });
+            }
             
-            setTimeout(() => {
-                const data = useCases[tabName];
-                
-                let featuresHtml = data.features.map(f => `
-                    <li class="flex items-center space-x-3 text-gray-300">
-                        <i class="fa-solid fa-check text-primary"></i>
-                        <span>${f}</span>
-                    </li>
-                `).join('');
-                
-                let statsHtml = data.stats.map(s => `
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-white">${s.value}</div>
-                        <div class="text-xs text-gray-500">${s.label}</div>
-                    </div>
-                `).join('<div class="w-px bg-white/10"></div>');
-                
-                contentDiv.innerHTML = `
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
-                        <i class="fa-solid ${data.icon} mr-2"></i>
-                        ${data.label}
-                    </div>
-                    <h3 class="font-display text-3xl font-bold mb-4">${data.title}</h3>
-                    <p class="text-gray-400 mb-6 leading-relaxed">${data.content}</p>
-                    <ul class="space-y-3 mb-8">
-                        ${featuresHtml}
-                    </ul>
-                    <div class="flex space-x-4">
-                        ${statsHtml}
-                    </div>
-                `;
-                
-                contentDiv.style.opacity = '1';
-                contentDiv.style.transform = 'translateY(0)';
-            }, 300);
+            drawChart();
+            window.addEventListener('resize', drawChart);
         }
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        // === SCROLL REVEAL ===
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        // === SMOOTH SCROLL ===
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function(e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Close mobile menu if open
+                const t = document.querySelector(this.getAttribute('href'));
+                if (t) {
+                    t.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     document.getElementById('mobile-menu').classList.add('hidden');
                 }
             });
-        });
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('shadow-lg', 'bg-dark/90');
-            } else {
-                nav.classList.remove('shadow-lg', 'bg-dark/90');
-            }
         });
     </script>
 </body>
